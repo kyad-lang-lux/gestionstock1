@@ -30,7 +30,6 @@ export default function ParametresPage() {
     
     if (result.success) {
       setMessage({ type: 'success', text: result.message });
-      // On n'a pas besoin de recharger, l'état local est déjà à jour
     } else {
       setMessage({ type: 'error', text: result.error });
     }
@@ -65,6 +64,7 @@ export default function ParametresPage() {
       )}
 
       <div className="settings-grid">
+        {/* SECTION IDENTITÉ */}
         <section className="settings-card">
           <div className="card-header">
             <i className="fas fa-user-circle"></i>
@@ -87,19 +87,31 @@ export default function ParametresPage() {
           </form>
         </section>
 
+        {/* SECTION SÉCURITÉ - MOT DE PASSE VISIBLE */}
         <section className="settings-card">
           <div className="card-header">
-            <i className="fas fa-lock"></i>
             <h2>Sécurité</h2>
           </div>
           <form onSubmit={handleUpdatePassword} className="settings-form">
             <div className="form-group">
               <label>Ancien mot de passe</label>
-              <input name="oldPass" type="password" placeholder="••••••••" required />
+              {/* Type text pour que le mot de passe soit visible */}
+              <input 
+                name="oldPass" 
+                type="text" 
+                placeholder="Entrez l'ancien mot de passe" 
+                required 
+              />
             </div>
             <div className="form-group">
               <label>Nouveau mot de passe</label>
-              <input name="newPass" type="password" placeholder="Minimum 8 caractères" required />
+              {/* Type text pour que le mot de passe soit visible */}
+              <input 
+                name="newPass" 
+                type="text" 
+                placeholder="Minimum 8 caractères" 
+                required 
+              />
             </div>
             <button type="submit" className="save-btn btn-outline" disabled={isPending}>
                Changer le mot de passe
