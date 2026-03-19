@@ -2,16 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import '@/styles/dashboard.css';
-import { updateUsernameAction, updatePasswordAction, logoutAction } from './actions';
+import { updateUsernameAction, updatePasswordAction, logoutAction, getUserAction } from './actions';
 
 export default function ParametresPage() {
   const [userName, setUserName] = useState('Chargement...');
   const [isPending, setIsPending] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
+  // Charger le vrai nom depuis la base de données au chargement de la page
   useEffect(() => {
     const fetchUser = async () => {
-      setUserName('stoicisme69'); 
+      const res = await getUserAction();
+      if (res.success) {
+        setUserName(res.username);
+      } else {
+        setUserName('Erreur');
+      }
     };
     fetchUser();
   }, []);
@@ -21,8 +27,13 @@ export default function ParametresPage() {
     setIsPending(true);
     const result = await updateUsernameAction(userName);
     setIsPending(false);
-    if (result.success) setMessage({ type: 'success', text: result.message });
-    else setMessage({ type: 'error', text: result.error });
+    
+    if (result.success) {
+      setMessage({ type: 'success', text: result.message });
+      // On n'a pas besoin de recharger, l'état local est déjà à jour
+    } else {
+      setMessage({ type: 'error', text: result.error });
+    }
   };
 
   const handleUpdatePassword = async (e) => {
@@ -33,7 +44,9 @@ export default function ParametresPage() {
     if (result.success) {
       setMessage({ type: 'success', text: result.message });
       e.target.reset();
-    } else setMessage({ type: 'error', text: result.error });
+    } else {
+      setMessage({ type: 'error', text: result.error });
+    }
   };
 
   return (
@@ -60,12 +73,14 @@ export default function ParametresPage() {
           <form onSubmit={handleUpdateProfile} className="settings-form">
             <div className="form-group">
               <label>Nom d'utilisateur</label>
-              <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} required />
+              <input 
+                type="text" 
+                value={userName} 
+                onChange={(e) => setUserName(e.target.value)} 
+                required 
+              />
             </div>
-            <div className="form-group">
-              <label>Email (non modifiable)</label>
-              <input type="email" value="stoicisme69@gmail.com" disabled className="input-disabled" />
-            </div>
+           
             <button type="submit" className="save-btn" disabled={isPending}>
               {isPending ? "Mise à jour..." : "Mettre à jour le nom"}
             </button>

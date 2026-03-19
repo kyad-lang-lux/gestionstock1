@@ -43,7 +43,7 @@ export default function LoginPage() {
               <label>Nom d'utilisateur</label>
               <div className="input-wrapper">
                 <i className="far fa-user"></i>
-                <input name="username" type="text" placeholder="ex: stoicisme69" required />
+                <input name="username" type="text" placeholder="ex: admin" required />
               </div>
             </div>
 
