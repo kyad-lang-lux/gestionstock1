@@ -1,0 +1,29 @@
+CREATE TABLE `categories` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`nom` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `mouvements` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`produit_id` integer,
+	`quantite` integer NOT NULL,
+	`date` text DEFAULT '2026-03-19T22:06:51.548Z',
+	FOREIGN KEY (`produit_id`) REFERENCES `produits`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `produits` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`nom` text NOT NULL,
+	`categorie_id` integer,
+	`prix` real NOT NULL,
+	`quantite_stock` integer DEFAULT 0 NOT NULL,
+	`seuil_alerte` integer DEFAULT 5 NOT NULL,
+	`date_ajout` text DEFAULT '2026-03-19T22:06:51.545Z',
+	FOREIGN KEY (`categorie_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `users` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`username` text NOT NULL,
+	`password` text NOT NULL
+);

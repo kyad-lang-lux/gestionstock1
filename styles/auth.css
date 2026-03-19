@@ -1,0 +1,116 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+/* --- CÔTÉ GAUCHE --- */
+.auth-left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.auth-content {
+  width: 100%;
+  max-width: 400px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 40px;
+}
+
+h1 { font-size: 2.2rem; color: #1e293b; }
+.subtitle { color: #64748b; margin-bottom: 30px; }
+
+/* Formulaire */
+.input-group { margin-bottom: 20px; }
+.input-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #334155; }
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper i {
+  position: absolute;
+  left: 15px;
+  color: #94a3b8;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  outline: none;
+}
+
+.toggle-password { left: auto !important; right: 15px; cursor: pointer; }
+
+.auth-options {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 30px;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --- CÔTÉ DROIT --- */
+.auth-right {
+  flex: 1;
+  background-color: #eff6ff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+  text-align: center;
+}
+
+.illustration-box {
+  background: #dbeafe;
+  width: 200px;
+  height: 200px;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.illustration-box i { font-size: 80px; color: #2563eb; }
+.auth-right h2 { color: #1e293b; margin-bottom: 15px; }
+.auth-right p { color: #64748b; max-width: 400px; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+  .auth-right { display: none; } /* On cache la partie bleue sur tablette/mobile */
+}
