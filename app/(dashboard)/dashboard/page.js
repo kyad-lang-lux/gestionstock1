@@ -142,4 +142,4 @@ function BarItem({ label, val, total, color }) {
       <span style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '8px' }}>{label}</span>
     </div>
   );
-}
+} 
