@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'StockPro - Connexion',
+  title: 'StockManager',
 };
 
 export default function RootLayout({ children }) {

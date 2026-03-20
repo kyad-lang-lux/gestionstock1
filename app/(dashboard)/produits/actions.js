@@ -1,29 +1,50 @@
 'use server';
 
 import { db } from "@/db/index.js";
-import { produits } from "@/db/schema.js";
+import { produits, categories } from "@/db/schema.js";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-// Récupérer tous les produits
-export async function getProduitsAction() {
+// 1. Récupérer toutes les catégories pour les menus déroulants
+export async function getCategoriesAction() {
   try {
-    const data = await db.select().from(produits);
+    const data = await db.select().from(categories);
     return { success: true, data };
   } catch (e) {
     return { success: false, error: e.message };
   }
 }
 
-// Sauvegarder (Créer ou Modifier)
+// 2. Récupérer les produits avec une jointure pour avoir le nom de la catégorie
+export async function getProduitsAction() {
+  try {
+    // On fait une jointure pour récupérer directement le nom de la catégorie associée
+    const data = await db.select({
+      id: produits.id,
+      nom: produits.nom,
+      prix: produits.prix,
+      quantiteStock: produits.quantiteStock,
+      dateAjout: produits.dateAjout,
+      categorieId: produits.categorieId,
+      categorieNom: categories.nom,
+    })
+    .from(produits)
+    .leftJoin(categories, eq(produits.categorieId, categories.id));
+    
+    return { success: true, data };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// 3. Sauvegarder (Créer ou Modifier)
 export async function saveProductAction(data) {
   try {
     const payload = {
       nom: data.nom,
       prix: parseFloat(data.prix),
       quantiteStock: parseInt(data.qte),
-      // On simule une catégorie ID fixe pour l'instant (ex: 1) ou on gère par nom
-      categorieId: data.cat === 'Ordinateurs' ? 1 : (data.cat === 'Accessoires' ? 2 : 3),
+      categorieId: parseInt(data.categorieId), // On utilise l'ID envoyé par le select
     };
 
     if (data.id) {
@@ -36,12 +57,11 @@ export async function saveProductAction(data) {
     revalidatePath('/dashboard');
     return { success: true };
   } catch (e) {
-    console.error(e);
     return { success: false, error: e.message };
   }
 }
 
-// Supprimer
+// 4. Supprimer
 export async function deleteProductAction(id) {
   try {
     await db.delete(produits).where(eq(produits.id, id));

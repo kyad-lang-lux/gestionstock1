@@ -1,26 +1,33 @@
 'use client';
 import { useState, useEffect } from 'react';
 import '@/styles/dashboard.css';
-import { saveProductAction, deleteProductAction, getProduitsAction } from './actions';
+import { saveProductAction, deleteProductAction, getProduitsAction, getCategoriesAction } from './actions';
 
 export default function ProduitsPage() {
   const [produits, setProduits] = useState([]);
+  const [listeCategories, setListeCategories] = useState([]); // Nouvel état pour les catégories
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCat, setFilterCat] = useState('Tous');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Charger les données de Turso au démarrage
   const refreshData = async () => {
     setLoading(true);
-    const res = await getProduitsAction();
-    if (res.success) {
-      // On mappe les données de la DB vers le format de ton interface
-      const mapped = res.data.map(p => ({
+    // On récupère les catégories ET les produits
+    const [resProd, resCat] = await Promise.all([
+      getProduitsAction(),
+      getCategoriesAction()
+    ]);
+
+    if (resCat.success) setListeCategories(resCat.data);
+
+    if (resProd.success) {
+      const mapped = resProd.data.map(p => ({
         id: p.id,
         nom: p.nom,
-        cat: p.categorieId === 1 ? 'Ordinateurs' : (p.categorieId === 2 ? 'Accessoires' : 'Moniteurs'),
+        cat: p.categorieNom || 'Sans catégorie',
+        categorieId: p.categorieId,
         qte: p.quantiteStock,
         prix: p.prix,
         date: p.dateAjout ? new Date(p.dateAjout).toLocaleDateString() : '-',
@@ -55,7 +62,7 @@ export default function ProduitsPage() {
     const data = {
       id: editingProduct?.id,
       nom: formData.get('nom'),
-      cat: formData.get('cat'),
+      categorieId: formData.get('categorieId'), // On récupère l'ID sélectionné
       qte: formData.get('qte'),
       prix: formData.get('prix'),
     };
@@ -98,9 +105,9 @@ export default function ProduitsPage() {
         <div className="filters">
           <select className="filter-select" value={filterCat} onChange={(e) => setFilterCat(e.target.value)}>
             <option value="Tous">Toutes les catégories</option>
-            <option value="Ordinateurs">Ordinateurs</option>
-            <option value="Accessoires">Accessoires</option>
-            <option value="Moniteurs">Moniteurs</option>
+            {listeCategories.map(c => (
+              <option key={c.id} value={c.nom}>{c.nom}</option>
+            ))}
           </select>
           <button className="add-btn" onClick={() => openModal()}>
             <i className="fas fa-plus"></i> Ajouter
@@ -133,7 +140,7 @@ export default function ProduitsPage() {
                   </td>
                   <td className="category-text">{p.cat}</td>
                   <td><strong>{p.qte}</strong></td>
-                  <td><strong>{p.prix} €</strong></td>
+                  <td><strong>{p.prix.toLocaleString()} FCFA</strong></td>
                   <td>{p.date}</td>
                   <td>
                     <span className={`status-badge ${p.status.toLowerCase().replace(' ', '-')}`}>
@@ -161,19 +168,19 @@ export default function ProduitsPage() {
             <form onSubmit={handleSaveProduct}>
               <div className="form-group">
                 <label>Nom du produit</label>
-                <input name="nom" defaultValue={editingProduct?.nom} required placeholder="ex: MacBook Pro" />
+                <input name="nom" defaultValue={editingProduct?.nom} required />
               </div>
               <div className="form-row">
                 <div className="form-group">
                   <label>Catégorie</label>
-                  <select name="cat" defaultValue={editingProduct?.cat || 'Ordinateurs'}>
-                    <option>Ordinateurs</option>
-                    <option>Accessoires</option>
-                    <option>Moniteurs</option>
+                  <select name="categorieId" defaultValue={editingProduct?.categorieId}>
+                    {listeCategories.map(c => (
+                      <option key={c.id} value={c.id}>{c.nom}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Prix (€)</label>
+                  <label>Prix (FCFA)</label>
                   <input name="prix" type="number" step="0.01" defaultValue={editingProduct?.prix} required />
                 </div>
               </div>
