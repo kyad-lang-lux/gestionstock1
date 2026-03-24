@@ -18,8 +18,8 @@ export default function DashboardLayout({ children }) {
 
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
-          <i className="fas fa-cube text-white"></i> 
-          <span>StockManager</span>
+          <i className="fa-solid fa-computer"></i>
+          <span>Ulrich Services</span>
         </div>
         
         <nav className="sidebar-nav">
@@ -34,7 +34,9 @@ export default function DashboardLayout({ children }) {
           </Link>
           
           <div className="nav-separator"></div>
-          
+          <Link href="/admin/notifications" className={`nav-item ${isActive('/admin/notifications')}`} onClick={() => setIsOpen(false)}>
+  <i className="fas fa-user-shield"></i> <span>Espace Admin</span>
+</Link>
           <Link href="/parametres" className={`nav-item ${isActive('/parametres')}`} onClick={() => setIsOpen(false)}>
             <i className="fas fa-cog"></i> <span>Paramètres</span>
           </Link>
@@ -58,9 +60,9 @@ export default function DashboardLayout({ children }) {
               <span className="badge-dot"></span>
             </div>
             <div className="user-profile-simple">
-              <div className="avatar">S</div>
+              <div className="avatar">U</div>
               <div className="user-details">
-                <span className="username">StockManag</span>
+                <span className="username">Stock</span>
               </div>
             </div>
           </div>

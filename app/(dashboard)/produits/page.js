@@ -5,7 +5,7 @@ import { saveProductAction, deleteProductAction, getProduitsAction, getCategorie
 
 export default function ProduitsPage() {
   const [produits, setProduits] = useState([]);
-  const [listeCategories, setListeCategories] = useState([]); // Nouvel état pour les catégories
+  const [listeCategories, setListeCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCat, setFilterCat] = useState('Tous');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,14 +14,11 @@ export default function ProduitsPage() {
 
   const refreshData = async () => {
     setLoading(true);
-    // On récupère les catégories ET les produits
     const [resProd, resCat] = await Promise.all([
       getProduitsAction(),
       getCategoriesAction()
     ]);
-
     if (resCat.success) setListeCategories(resCat.data);
-
     if (resProd.success) {
       const mapped = resProd.data.map(p => ({
         id: p.id,
@@ -42,33 +39,27 @@ export default function ProduitsPage() {
     refreshData();
   }, []);
 
-  const produitsFiltrés = produits.filter(p => {
-    const matchSearch = p.nom?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchCat = filterCat === 'Tous' || p.cat === filterCat;
-    return matchSearch && matchCat;
-  });
-
   const handleDelete = async (id) => {
-    if(confirm("Supprimer ce produit définitivement ?")) {
+    if(confirm("Envoyer une demande de suppression à l'admin ?")) {
       const res = await deleteProductAction(id);
-      if(res.success) refreshData();
+      if(res.success) alert("Demande de suppression envoyée à l'administrateur.");
     }
   };
 
   const handleSaveProduct = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    
     const data = {
       id: editingProduct?.id,
       nom: formData.get('nom'),
-      categorieId: formData.get('categorieId'), // On récupère l'ID sélectionné
+      categorieId: formData.get('categorieId'),
       qte: formData.get('qte'),
       prix: formData.get('prix'),
     };
 
     const res = await saveProductAction(data);
     if (res.success) {
+      alert("Demande envoyée ! L'admin doit valider ce changement.");
       closeModal();
       refreshData();
     } else {
@@ -86,10 +77,17 @@ export default function ProduitsPage() {
     setEditingProduct(null);
   };
 
+  const produitsFiltrés = produits.filter(p => {
+    const matchSearch = p.nom?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchCat = filterCat === 'Tous' || p.cat === filterCat;
+    return matchSearch && matchCat;
+  });
+
   return (
     <div className="produits-container">
       <div className="page-header">
         <h1>Liste des produits</h1>
+        <p style={{fontSize: '0.8rem', color: '#64748b'}}>Note: Toute modification nécessite la validation de l'administrateur.</p>
       </div>
 
       <div className="table-controls">
@@ -97,7 +95,7 @@ export default function ProduitsPage() {
           <i className="fas fa-search"></i>
           <input 
             type="text" 
-            placeholder="Rechercher un produit..." 
+            placeholder="Rechercher..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -117,31 +115,28 @@ export default function ProduitsPage() {
 
       <div className="table-responsive">
         {loading ? (
-          <p style={{padding: '20px'}}>Chargement des données en cours...</p>
+          <p style={{padding: '20px'}}>Chargement...</p>
         ) : (
           <table className="products-table">
             <thead>
               <tr>
+                <th style={{ width: '50px' }}>#</th> {/* Colonne Numéro */}
                 <th>Produit</th>
                 <th>Catégorie</th>
                 <th>Quantité</th>
                 <th>Prix</th>
-                <th>Date</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {produitsFiltrés.map((p) => (
+              {produitsFiltrés.map((p, index) => (
                 <tr key={p.id}>
-                  <td className="product-cell">
-                    <div className="product-icon">📦</div>
-                    <span>{p.nom}</span>
-                  </td>
-                  <td className="category-text">{p.cat}</td>
+                  <td style={{ color: '#94a3b8', fontWeight: '500' }}>{index + 1}</td> {/* Affichage de l'index */}
+                  <td className="product-cell"> <i className="fa-solid fa-cube"></i> <span>{p.nom}</span></td>
+                  <td>{p.cat}</td>
                   <td><strong>{p.qte}</strong></td>
-                  <td><strong>{p.prix.toLocaleString()} FCFA</strong></td>
-                  <td>{p.date}</td>
+                  <td>{p.prix.toLocaleString()} FCFA</td>
                   <td>
                     <span className={`status-badge ${p.status.toLowerCase().replace(' ', '-')}`}>
                       {p.status}
@@ -162,12 +157,12 @@ export default function ProduitsPage() {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{editingProduct ? 'Modifier le produit' : 'Ajouter un produit'}</h2>
+              <h2>{editingProduct ? 'Modifier' : 'Ajouter'}</h2>
               <button onClick={closeModal} className="close-modal">&times;</button>
             </div>
             <form onSubmit={handleSaveProduct}>
               <div className="form-group">
-                <label>Nom du produit</label>
+                <label>Nom</label>
                 <input name="nom" defaultValue={editingProduct?.nom} required />
               </div>
               <div className="form-row">
@@ -180,17 +175,17 @@ export default function ProduitsPage() {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Prix (FCFA)</label>
-                  <input name="prix" type="number" step="0.01" defaultValue={editingProduct?.prix} required />
+                  <label>Prix</label>
+                  <input name="prix" type="number" defaultValue={editingProduct?.prix} required />
                 </div>
               </div>
               <div className="form-group">
-                <label>Quantité en stock</label>
+                <label>Quantité</label>
                 <input name="qte" type="number" defaultValue={editingProduct?.qte} required />
               </div>
               <div className="modal-footer">
                 <button type="button" onClick={closeModal} className="btn-secondary">Annuler</button>
-                <button type="submit" className="add-btn">Enregistrer</button>
+                <button type="submit" className="add-btn">Demander Validation</button>
               </div>
             </form>
           </div>

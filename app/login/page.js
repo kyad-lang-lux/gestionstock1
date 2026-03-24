@@ -30,11 +30,11 @@ export default function LoginPage() {
       <div className="auth-left">
         <div className="auth-content">
           <div className="logo">
-            <i className="fas fa-boxes-stacked"></i> <span>StockPro</span>
+           <span>Ulrich Electronique & Services</span>
           </div>
           
           <h1>Bienvenue</h1>
-          <p className="subtitle">Connectez-vous avec vos identifiants Turso.</p>
+          <p className="subtitle">Connectez-vous avec vos identifiants .</p>
 
           {error && (
             <div className="error-message" style={{
@@ -82,7 +82,7 @@ export default function LoginPage() {
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <input type="checkbox" /> Se souvenir de moi
               </label>
-              <a href="#">Mot de passe oublié ?</a>
+              {/* <a href="#">Mot de passe oublié ?</a> */}
             </div>
 
             <button type="submit" className="btn-login" disabled={isLoading}>
