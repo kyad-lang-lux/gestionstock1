@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }) {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <i className="fa-solid fa-computer"></i>
-          <span>Ulrich Services</span>
+          <span>Electro & Meuble</span>
         </div>
         
         <nav className="sidebar-nav">
@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }) {
               <span className="badge-dot"></span>
             </div>
             <div className="user-profile-simple">
-              <div className="avatar">U</div>
+              <div className="avatar">E</div>
               <div className="user-details">
                 <span className="username">Stock</span>
               </div>

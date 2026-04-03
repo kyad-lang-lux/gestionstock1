@@ -30,7 +30,7 @@ export default function LoginPage() {
       <div className="auth-left">
         <div className="auth-content">
           <div className="logo">
-           <span>Ulrich Electronique & Services</span>
+           <span>Electro & Meubles</span>
           </div>
           
           <h1>Bienvenue</h1>
@@ -41,7 +41,7 @@ export default function LoginPage() {
               color: '#721c24', 
               backgroundColor: '#f8d7da', 
               padding: '10px', 
-              borderRadius: '5px', 
+              borderRadius: '5px',  
               marginBottom: '15px',
               fontSize: '14px',
               border: '1px solid #f5c6cb'

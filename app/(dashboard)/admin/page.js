@@ -16,7 +16,7 @@ export default function AdminLoginPage() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (auth.user === "admin" && auth.pass === "admin@ulrich") {
+    if (auth.user === "admin" && auth.pass === "admin@electro") {
       localStorage.setItem("admin_token", "true");
       router.push("/admin/notifications");
     } else {
